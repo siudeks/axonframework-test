@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "demo",
+                "projectName": "demo",
+                "workingDirectory": "c:\\GitHub\\siudeks\\axonframework-test",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "demo",
+                "projectName": "demo",
+                "workingDirectory": "c:\\GitHub\\siudeks\\axonframework-test",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
