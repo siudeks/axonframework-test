@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import net.siudek.TestContext;
+import net.siudek.lesson01.TestContext;
 
 /**
  * I found a practical problem how to guarantee unique aggregates in Axon
@@ -32,7 +32,7 @@ public class UniqueAggregateSpec {
 
     @Test
     @SneakyThrows
-    public void firstTest() {
+    public void shouldCalcState() {
         val cmd = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
         commandGateway.send(cmd, LoggingCallback.INSTANCE);
 
@@ -40,6 +40,22 @@ public class UniqueAggregateSpec {
             .query(new StateSnapshotQuery(), StateSnapshotReply.class)
             .get();
 
-        Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(3);
+        Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(1);
+    }
+
+    @Test
+    @SneakyThrows
+    public void shouldNotCalcDuplicatedState() {
+        val cmd1 = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
+        commandGateway.send(cmd1, LoggingCallback.INSTANCE);
+
+        val cmd2 = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
+        commandGateway.send(cmd2, LoggingCallback.INSTANCE);
+
+        val reply = queryGateway
+            .query(new StateSnapshotQuery(), StateSnapshotReply.class)
+            .get();
+
+        Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(1);
     }
 }

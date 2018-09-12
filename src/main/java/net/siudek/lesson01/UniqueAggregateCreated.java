@@ -15,7 +15,7 @@ public class UniqueAggregateCreated {
     @SagaEventHandler(associationProperty = "name")
     @SneakyThrows
     public void on(AggregateCreatedEvent evt) {
-        Thread.sleep(5000);
+        //Thread.sleep(5000);
     }
 
 }

@@ -1,4 +1,4 @@
-package net.siudek;
+package net.siudek.lesson01;
 
 import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
 import org.axonframework.eventsourcing.eventstore.inmemory.InMemoryEventStorageEngine;
