@@ -32,24 +32,11 @@ public class UniqueAggregateSpec {
 
     @Test
     @SneakyThrows
-    public void shouldCalcState() {
-        val cmd = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
-        commandGateway.send(cmd, LoggingCallback.INSTANCE);
-
-        val reply = queryGateway
-            .query(new StateSnapshotQuery(), StateSnapshotReply.class)
-            .get();
-
-        Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(1);
-    }
-
-    @Test
-    @SneakyThrows
     public void shouldNotCalcDuplicatedState() {
-        val cmd1 = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
+        val cmd1 = new AggregateCreateCommand(UUID.randomUUID(), "my unique name");
         commandGateway.send(cmd1, LoggingCallback.INSTANCE);
 
-        val cmd2 = new CreateAggregateCommand(UUID.randomUUID(), "my unique name");
+        val cmd2 = new AggregateCreateCommand(UUID.randomUUID(), "my unique name");
         commandGateway.send(cmd2, LoggingCallback.INSTANCE);
 
         val reply = queryGateway

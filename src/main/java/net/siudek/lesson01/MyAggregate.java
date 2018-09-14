@@ -8,38 +8,30 @@ import org.axonframework.commandhandling.model.AggregateLifecycle;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import lombok.Value;
 import lombok.val;
 
 @Aggregate
-class UniqueAggregateSupportedBySaga {
+class MyAggregate {
 
     @AggregateIdentifier
     private UUID instanceId;
+    private STATE state = STATE.DRAFT;
 
     @CommandHandler
-    public UniqueAggregateSupportedBySaga(CreateAggregateCommand cmd) {
-        val evt = new AggregateCreatedEvent(cmd.getInstanceId(), cmd.getName());
+    public MyAggregate(AggregateCreateCommand cmd) {
+        val evt = new AggregateDraftedEvent(cmd.getInstanceId(), cmd.getName());
         AggregateLifecycle.apply(evt);
     }
 
     @EventSourcingHandler
-    public void on(AggregateCreatedEvent evt) {
+    public void on(AggregateDraftedEvent evt) {
         instanceId = evt.getInstanceId();
+    }
+
+    enum STATE {
+        DRAFT,
+        PUBLIC
     }
 }
 
-@Value
-class CreateAggregateCommand {
-
-    @AggregateIdentifier
-    private UUID instanceId;
-    private String name;
-}
-
-@Value
-class AggregateCreatedEvent {
-    private UUID instanceId;
-    private String name;
-}
 
