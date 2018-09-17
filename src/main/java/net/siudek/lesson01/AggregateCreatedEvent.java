@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.Value;
 
 @Value
-class AggregateDraftedEvent {
-    private String instanceId;
+class AggregateCreatedEvent {
+    private UUID instanceId;
     private String name;
 }

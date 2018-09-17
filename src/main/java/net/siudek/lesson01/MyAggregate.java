@@ -9,28 +9,38 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import lombok.val;
+import lombok.extern.java.Log;
 
 @Aggregate
+@Log
 class MyAggregate {
 
     @AggregateIdentifier
-    private UUID instanceId;
-    private STATE state = STATE.DRAFT;
+    private String instanceId;
+    private String name;
 
     @CommandHandler
     public MyAggregate(AggregateCreateCommand cmd) {
-        val evt = new AggregateDraftedEvent(cmd.getInstanceId(), cmd.getName());
+        val evt = new AggregateDraftedEvent(cmd.getInstanceId().toString(), cmd.getName());
+        AggregateLifecycle.apply(evt);
+    }
+
+    @CommandHandler
+    public MyAggregate(AggregatePublishCommand cmd) {
+        val evt = new AggregatePublishedEvent(cmd.getInstanceId(), name);
         AggregateLifecycle.apply(evt);
     }
 
     @EventSourcingHandler
     public void on(AggregateDraftedEvent evt) {
-        instanceId = evt.getInstanceId();
+        log.info("Siudek2: " + evt.toString());
+        instanceId = evt.getInstanceId().toString();
+        name = evt.getName();
     }
 
-    enum STATE {
-        DRAFT,
-        PUBLIC
+    @EventSourcingHandler
+    public void on(AggregatePublishedEvent evt) {
+        //
     }
 }
 
