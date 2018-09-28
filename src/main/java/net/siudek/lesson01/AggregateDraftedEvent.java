@@ -1,7 +1,5 @@
 package net.siudek.lesson01;
 
-import java.util.UUID;
-
 import lombok.Value;
 
 @Value

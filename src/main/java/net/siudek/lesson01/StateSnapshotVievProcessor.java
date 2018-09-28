@@ -1,5 +1,7 @@
 package net.siudek.lesson01;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Component;
@@ -7,15 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 class StateSnapshotVievProcessor {
 
-    private int registeredInstances = 0;
+    private AtomicInteger registeredInstances = new AtomicInteger();
 
     @EventHandler
     void on(AggregatePublishedEvent evt) {
-        registeredInstances++;
+        registeredInstances.incrementAndGet();
     }
 
     @QueryHandler
     StateSnapshotReply answer(StateSnapshotQuery q) {
-        return new StateSnapshotReply(registeredInstances);
+        return new StateSnapshotReply(registeredInstances.get());
     }
 }

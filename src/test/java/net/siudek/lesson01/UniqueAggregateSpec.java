@@ -5,6 +5,10 @@ import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.eventhandling.saga.SagaRepository;
+import org.axonframework.eventhandling.saga.repository.AnnotatedSagaRepository;
+import org.axonframework.eventhandling.saga.repository.SagaStore;
+import org.axonframework.eventhandling.saga.repository.inmemory.InMemorySagaStore;
 import org.axonframework.queryhandling.QueryGateway;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,20 +33,26 @@ public class UniqueAggregateSpec {
 
     @Autowired
     private QueryGateway queryGateway;
-
+    
     @Test
     @SneakyThrows
     public void shouldNotCalcDuplicatedState() {
-        val cmd1 = new AggregateCreateCommand(UUID.randomUUID(), "my unique name");
+
+        val uniqueName = "my unique name";
+        val cmd1 = new AggregateCreateCommand(UUID.randomUUID(), uniqueName);
         commandGateway.send(cmd1, LoggingCallback.INSTANCE);
 
-        val cmd2 = new AggregateCreateCommand(UUID.randomUUID(), "my unique name");
+        Thread.sleep(300);
+
+        val cmd2 = new AggregateCreateCommand(UUID.randomUUID(), uniqueName);
         commandGateway.send(cmd2, LoggingCallback.INSTANCE);
 
-        // val reply = queryGateway
-        //     .query(new StateSnapshotQuery(), StateSnapshotReply.class)
-        //     .get();
+        Thread.sleep(300);
 
-        // Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(1);
+        val reply = queryGateway
+            .query(new StateSnapshotQuery(), StateSnapshotReply.class)
+            .get();
+
+        Assertions.assertThat(reply.getUniqueInstances()).isEqualTo(1);
     }
 }

@@ -8,12 +8,13 @@ import org.axonframework.commandhandling.model.AggregateLifecycle;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import lombok.NoArgsConstructor;
 import lombok.val;
 import lombok.extern.java.Log;
 
 @Aggregate
-@Log
-class MyAggregate {
+@NoArgsConstructor
+class BookAggregate {
 
     @AggregateIdentifier
     private String instanceId;
@@ -26,14 +27,13 @@ class MyAggregate {
     }
 
     @CommandHandler
-    public MyAggregate(AggregatePublishCommand cmd) {
+    public void handle(AggregatePublishCommand cmd) {
         val evt = new AggregatePublishedEvent(cmd.getInstanceId(), name);
         AggregateLifecycle.apply(evt);
     }
 
     @EventSourcingHandler
     public void on(AggregateDraftedEvent evt) {
-        log.info("Siudek2: " + evt.toString());
         instanceId = evt.getInstanceId().toString();
         name = evt.getName();
     }
@@ -43,5 +43,3 @@ class MyAggregate {
         //
     }
 }
-
-
